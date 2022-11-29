@@ -7,5 +7,9 @@ router.get('/findall',collegeController.findall)
 router.get('/findone',collegeController.findOne)
 router.delete('/delete',collegeController.remove)
 router.put('/update',collegeController.update)
+router.put('/updatemany',collegeController.updateall)
+router.put('/update1',collegeController.update1)
+router.delete('/deletemany',collegeController.removemany)
+
 
 export {router}
