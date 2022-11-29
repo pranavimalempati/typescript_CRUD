@@ -22,7 +22,7 @@ export const addCollege= async (req:Request,res:Response)=>{
         res.status(400).json({
             status: "fail",
             response: null,
-            message: "failed!....",
+            message: error,
           });
     }
 }
@@ -40,7 +40,7 @@ export const findall= async (req:Request,res:Response)=>{
         res.status(400).json({
             status: "fail",
             response: null,
-            message: "failed!....",
+            message: error,
           });
     }
 
@@ -62,7 +62,7 @@ export const remove = async (req:Request,res:Response)=>{
         res.status(400).json({
             status: "fail",
             response: null,
-            message: "failed!....",
+            message: error,
           });
     }
 }
@@ -82,7 +82,7 @@ export const findOne = async (req:Request,res:Response)=>{
         res.status(400).json({
             status: "fail",
             response: null,
-            message: "failed!....",
+            message: error,
           });
     }
 }
@@ -106,7 +106,7 @@ export const update = async (req:Request,res:Response)=>{
         res.status(400).json({
             status: "fail",
             response: null,
-            message: "failed!....",
+            message: error,
           });
     }
 }
