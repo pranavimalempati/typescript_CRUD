@@ -4,8 +4,8 @@ const router = express.Router()
 
 router.post('/add',collegeController.addCollege)
 router.get('/findall',collegeController.findall)
-router.get('/findone/:name',collegeController.findOne)
-router.post('/delete',collegeController.remove)
-router.post('/update/:name',collegeController.update)
+router.get('/findone',collegeController.findOne)
+router.delete('/delete',collegeController.remove)
+router.put('/update',collegeController.update)
 
 export {router}

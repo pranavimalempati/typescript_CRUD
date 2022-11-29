@@ -2,6 +2,7 @@ import { Request, Response} from 'express';
 import {db} from '../config/db'
 const college=db.collection('College')
 
+
 export const addCollege= async (req:Request,res:Response)=>{
     try {
         let resp;
@@ -33,7 +34,7 @@ export const findall= async (req:Request,res:Response)=>{
 
 export const remove = async (req:Request,res:Response)=>{
     try {
-        const resp =  await college.deleteOne( req.body)
+        const resp =  await college.deleteOne({collegeId:req.body.collegeId})
         console.log(resp)
         res.send(resp)
 
@@ -45,9 +46,7 @@ export const remove = async (req:Request,res:Response)=>{
 export const findOne = async (req:Request,res:Response)=>{
     try {
 
-        const resp =  await college.findOne({name:req.params.name});
-        //     {_id:req.body}
-        //  );
+        const resp =  await college.findOne({collegeId:req.body.collegeId});
         console.log(resp)
         res.send(resp)
 
@@ -61,7 +60,7 @@ export const findOne = async (req:Request,res:Response)=>{
 export const update = async (req:Request,res:Response)=>{
     try {
         const resp =  await college.updateOne(
-            {name:req.params.name},
+            {collegeId:req.body.collegeId},
          { $set: req.body }
          );
         console.log(resp)
