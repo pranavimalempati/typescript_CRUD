@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response} from 'express';
+import { Request, Response} from 'express';
 import {db} from '../config/db'
 const college=db.collection('College')
 
@@ -27,9 +27,21 @@ export const addCollege= async (req:Request,res:Response)=>{
     }
 }
 
-export const findall= async (req:Request,res:Response)=>{
+// finding the data in db find many by giving condition
+export const findmany= async (req:Request,res:Response)=>{
     try {
-        const resp =  await college.find().toArray(); 
+        let resp;
+        // checking pagination
+        if ((req.body.skip || req.body.skip === 0) && req.body.take) {
+            resp = await college
+              .find({ $where: req.body.where })
+              .limit(req.body.take)
+              .skip(req.body.skip)
+              .toArray();
+          }
+          else {
+            resp = await college.find(req.body.where).toArray();
+          }
         console.log(resp)
         res.status(200).json({
             status: "success",
@@ -46,7 +58,38 @@ export const findall= async (req:Request,res:Response)=>{
 
 }
 
+// finding all the data in db
+export const findall= async (req:Request,res:Response)=>{
+    try {
+        let result;
+        //checking pagination
+        if ((req.body.skip || req.body.skip === 0) && req.body.take) {
+            result = await college
+              .find()
+              .limit(req.body.take)
+              .skip(req.body.skip)
+              .toArray();
+          }
+          else {
+            result = await college.find().toArray();
+          }
+        console.log(result)
+        res.status(200).json({
+            status: "success",
+            response: result,
+            message: "fetched sucessfully",
+          });
+    } catch (error) {
+        res.status(400).json({
+            status: "fail",
+            response: null,
+            message: error,
+          });
+    }
 
+}
+
+// deleting the one record in db 
 export const remove = async (req:Request,res:Response)=>{
     try {
         const resp =  await college.deleteOne({collegeId:req.body.collegeId})
@@ -67,6 +110,7 @@ export const remove = async (req:Request,res:Response)=>{
     }
 }
 
+// finding one record in db
 export const findOne = async (req:Request,res:Response)=>{
     try {
 
@@ -87,8 +131,7 @@ export const findOne = async (req:Request,res:Response)=>{
     }
 }
 
-// {collegeId:req.body.collegeId}
-
+// updating one record from db
 export const update = async (req:Request,res:Response)=>{
     try {
         const resp =  await college.updateOne(
@@ -111,16 +154,13 @@ export const update = async (req:Request,res:Response)=>{
     }
 }
 
-
+// updating many record in db
 export const updateall = async (req:Request,res:Response)=>{
     try {
 
         const filter ={name:req.body.name}
-        console.log(req.body.location)
         const updateDoc = {$set:{location:req.body.location}}
         const resp =  await college.updateMany(filter,updateDoc);
-        //  {collegeId:(req.body.collegeId)},
-        //  { $set: (req.body) }
         console.log(resp)
         
         res.status(200).json({
@@ -139,7 +179,7 @@ export const updateall = async (req:Request,res:Response)=>{
     }
 }
 
-
+// finding and updating the record in db
 export const update1= async (req:Request,res:Response)=>{
     try {
 
@@ -168,6 +208,7 @@ export const update1= async (req:Request,res:Response)=>{
     }
 }
 
+// deleting many records in db
 export const removemany = async (req:Request,res:Response)=>{
     try {
          req.body.where = req.body.where ? req.body.where : null;
@@ -189,4 +230,33 @@ export const removemany = async (req:Request,res:Response)=>{
     }
 }
 
+// pagination
+export const pagination = async (req:Request,res:Response)=>{
+    try {
+        const{pagelimit,skipval} = req.body
+        const posts = await college.find(req.body.where).limit(pagelimit).skip(skipval).toArray();
+        console.log(posts)
+        res.status(200).send(posts)
+    } catch (error) {
+        console.log(error);
+        res.status(400).send(error)
 
+    }
+}
+
+// finding the data based on substring  
+export const substr = async (req:Request,res:Response)=>{
+    try {
+
+        const resp = await college.find({$or:[
+            { location: { $regex: '.*' + req.body.location + '.*' } },
+            { name: { $regex: '.*' + req.body.name + '.*' } }
+        ]}).toArray();
+        console.log(resp)
+        res.status(200).send(resp)
+    } catch (error) {
+        console.log(error);
+        res.status(400).send(error)
+
+    }
+}
