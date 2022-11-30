@@ -46,10 +46,12 @@ export const findmany= async (req:Request,res:Response)=>{
                 { location: { $regex: '.*' + req.body.location + '.*' } },
                 { name: { $regex: '.*' + req.body.name + '.*' }}]}).toArray();
           }
+          const count = await college.countDocuments()
+          console.log(count)
         console.log(resp)
         res.status(200).json({
             status: "success",
-            response: resp,
+            response: {resp,count},
             message: "fetched sucessfully",
           });
     } catch (error) {
@@ -253,7 +255,7 @@ export const substr = async (req:Request,res:Response)=>{
     try {
 
         const resp = await college.find({$or:[
-            { location: { $regex: '.*' + req.body.location + '.*' } },
+            { location: { $regex: '.*' + (req.body.location)+ '.*' } },
             { name: { $regex: '.*' + req.body.name + '.*' } }
         ]}).toArray();
         console.log(resp)
