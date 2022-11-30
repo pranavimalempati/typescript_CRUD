@@ -34,13 +34,17 @@ export const findmany= async (req:Request,res:Response)=>{
         // checking pagination
         if ((req.body.skip || req.body.skip === 0) && req.body.take) {
             resp = await college
-              .find({ $where: req.body.where })
+              .find({$or:[
+                { location: { $regex: '.*' + req.body.location + '.*' } },
+                { name: { $regex: '.*' + req.body.name + '.*' }}]})
               .limit(req.body.take)
               .skip(req.body.skip)
               .toArray();
           }
           else {
-            resp = await college.find(req.body.where).toArray();
+            resp = await college.find({$or:[
+                { location: { $regex: '.*' + req.body.location + '.*' } },
+                { name: { $regex: '.*' + req.body.name + '.*' }}]}).toArray();
           }
         console.log(resp)
         res.status(200).json({
